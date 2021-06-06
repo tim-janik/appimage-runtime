@@ -15,7 +15,7 @@ LIBS		::= -ldl $(SQUASHLIBS:%=-l:lib%.a)
 TARGETS		::=
 
 # == runtime.c ==
-runtime.o: src/runtime.c $(wildcard src/*.c src/*.h) Makefile
+runtime.o: src/runtime.c $(wildcard src/*.c src/*.h)
 	$(CC) $(INCLUDES) $(DEFS) $(OPTIMIZE) $(PKG_CFLAGS) $(CFLAGS) -c $< -o $@
 
 # == appimage-runtime ==
