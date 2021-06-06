@@ -40,3 +40,15 @@ clean:
 
 # == all ==
 all: $(TARGETS)
+
+# == release ==
+release: all
+	@ git merge-base --is-ancestor HEAD origin/trunk || { echo "ERROR: HEAD not published in origin/trunk" ; false ; }
+	@ rm -f .release && D=`date +%y.%m | sed 's/\.0/./g'` && \
+		for n in `seq 0 99` ; do git rev-parse $$D.$$n >/dev/null 2>&1 || { echo $$D.$$n >.release; break ; } ; done
+	@ R=`cat .release` && rm -f .release && echo -e "\n# RELEASE: appimage-runtime v$$R:" && \
+		echo "hub release create -dpo -m 'appimage-runtime v$$R' $$R    $(TARGETS:%=-a %)" && \
+		echo '^^^^^^^^^^^^^^^^^^ Enter to execute... ' && \
+		read && \
+		hub release create -dpo -m "appimage-runtime v$$R" $$R    $(TARGETS:%=-a %)
+
