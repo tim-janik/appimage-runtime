@@ -21,3 +21,12 @@ runtime: runtime.o
 		$< -o $@ $(LIBS) $(UNZLIBS:%=-l:lib%.a)
 	strip $@
 all: runtime
+
+# == runtime-zstd ==
+runtime-zstd: runtime.o src/mocklibs.c
+	$(CC) $(OPTIMIZE) $(PKG_CFLAGS) $(CFLAGS) $(LDFLAGS) \
+		src/mocklibs.c -DWITH_ZSTD \
+		$< -o $@ $(LIBS) $(UNZLIBS:%=-l:lib%.a) \
+		$(LIBS) -l:libzstd.a
+	strip $@
+all: runtime-zstd
