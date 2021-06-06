@@ -498,7 +498,8 @@ bool rm_recursive(const char* const path) {
     return rv == 0;
 }
 
-bool build_mount_point(char* mount_dir, const char* const argv0, char const* const temp_base, const size_t templen) {
+void
+build_mount_point(char* mount_dir, const char* const argv0, char const* const temp_base, const size_t templen) {
     const size_t maxnamelen = 6;
 
     // when running for another AppImage, we should use that for building the mountpoint name instead
