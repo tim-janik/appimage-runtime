@@ -1,3 +1,5 @@
+SHELL         ::= /bin/bash -o pipefail
+
 all: # default target
 
 CC		 ?= clang
