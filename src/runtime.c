@@ -49,6 +49,7 @@
 #include <fnmatch.h>
 
 #include "hexlify.c"
+#include "notify.c"
 #include "elf.c"
 #include "picohash.h"
 
