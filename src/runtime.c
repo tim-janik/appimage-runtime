@@ -791,7 +791,17 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    LOAD_LIBRARY; /* exit if libfuse is missing */
+    if (access ("/dev/fuse", F_OK) < 0)        /* exit if libfuse cannot be used */
+      {
+        dprintf (2, "%s: failed to utilize FUSE during startup\n", argv[0]);
+        char *title = "Cannot mount AppImage, please check your FUSE setup.";
+        char *body  = "You might still be able to extract the contents of this AppImage \n"
+                      "if you run it with the --appimage-extract option. \n"
+                      "See https://github.com/AppImage/AppImageKit/wiki/FUSE \n"
+                      "for more information";
+        notify(title, body, 0); // 3 seconds timeout
+        exit (-1);
+      }
 
     int dir_fd, res;
 
