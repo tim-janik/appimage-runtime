@@ -1,0 +1,27 @@
+# This Source Code Form is licensed MPL-2.0: http://mozilla.org/MPL/2.0
+
+# == Distribution preparation ==
+ARG DIST
+FROM $DIST
+ENV DEBIAN_FRONTEND noninteractive
+
+# Use BASH(1) as shell, affects the RUN commands below
+RUN ln -sf bash /bin/sh && ls -al /bin/sh
+
+# Provide /bin/retry to overcome short network outages
+RUN echo -e '#!/bin/bash\n"$@" || { sleep 5 ; "$@" ; } || { sleep 15 ; "$@" ; }' > /bin/retry && chmod +x /bin/retry
+
+# make sure getpwuid() works, and ~/ is writable, otherwise many tools break
+ARG USERGROUP
+RUN mkdir -m 0755 -p /cbuild/ && cp /root/.bashrc /cbuild/ && \
+  groupadd --gid ${USERGROUP#*:} cbuild && useradd --uid ${USERGROUP%:*} --gid ${USERGROUP#*:} --home-dir /cbuild cbuild && \
+  chown -R ${USERGROUP} /cbuild
+
+# Upgrade packages
+RUN retry apt-get update && retry apt-get -y upgrade
+
+# Provide dependencies
+RUN retry apt-get install -y \
+    build-essential clang pkg-config git \
+    libzstd-dev liblz4-dev liblzo2-dev liblzma-dev zlib1g-dev \
+    libfuse-dev libsquashfuse-dev libsquashfs-dev
