@@ -871,7 +871,8 @@ int main(int argc, char *argv[]) {
         close (keepalive_pipe[1]);
 
         /* Pause until mounted */
-        read (keepalive_pipe[0], &c, 1);
+        ssize_t n = read (keepalive_pipe[0], &c, 1);
+        (void) n;
 
         /* Fuse process has now daemonized, reap our child */
         waitpid(pid, NULL, 0);

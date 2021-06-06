@@ -30,3 +30,8 @@ runtime-zstd: runtime.o src/mocklibs.c
 		$(LIBS) -l:libzstd.a
 	strip $@
 all: runtime-zstd
+
+# == clean ==
+clean:
+	rm -f *.o runtime runtime-zstd
+
