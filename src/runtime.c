@@ -166,7 +166,7 @@ char* getArg(int argc, char *argv[],char chr)
     for (i=1; i<argc; ++i)
         if ((argv[i][0]=='-') && (argv[i][1]==chr))
             return &(argv[i][2]);
-        return NULL;
+    return NULL;
 }
 
 /* mkdir -p implemented in C, needed for https://github.com/AppImage/AppImageKit/issues/333
