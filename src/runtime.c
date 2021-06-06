@@ -166,7 +166,7 @@ char* getArg(int argc, char *argv[],char chr)
     for (i=1; i<argc; ++i)
         if ((argv[i][0]=='-') && (argv[i][1]==chr))
             return &(argv[i][2]);
-        return NULL;
+    return NULL;
 }
 
 /* mkdir -p implemented in C, needed for https://github.com/AppImage/AppImageKit/issues/333
@@ -498,7 +498,8 @@ bool rm_recursive(const char* const path) {
     return rv == 0;
 }
 
-bool build_mount_point(char* mount_dir, const char* const argv0, char const* const temp_base, const size_t templen) {
+void
+build_mount_point(char* mount_dir, const char* const argv0, char const* const temp_base, const size_t templen) {
     const size_t maxnamelen = 6;
 
     // when running for another AppImage, we should use that for building the mountpoint name instead
@@ -643,7 +644,6 @@ int main(int argc, char *argv[]) {
     }
 
     // calculate full path of AppImage
-    int length;
     char fullpath[PATH_MAX];
 
     if(getenv("TARGET_APPIMAGE") == NULL) {
@@ -791,7 +791,17 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    LOAD_LIBRARY; /* exit if libfuse is missing */
+    if (access ("/dev/fuse", F_OK) < 0)        /* exit if libfuse cannot be used */
+      {
+        dprintf (2, "%s: failed to utilize FUSE during startup\n", argv[0]);
+        char *title = "Cannot mount AppImage, please check your FUSE setup.";
+        char *body  = "You might still be able to extract the contents of this AppImage \n"
+                      "if you run it with the --appimage-extract option. \n"
+                      "See https://github.com/AppImage/AppImageKit/wiki/FUSE \n"
+                      "for more information";
+        notify(title, body, 0); // 3 seconds timeout
+        exit (-1);
+      }
 
     int dir_fd, res;
 
