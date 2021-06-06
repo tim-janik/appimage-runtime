@@ -48,6 +48,7 @@
 #include <wait.h>
 #include <fnmatch.h>
 
+#include "hexlify.c"
 #include "elf.c"
 #include "picohash.h"
 
