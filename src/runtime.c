@@ -55,7 +55,6 @@
 #ifndef ENABLE_DLOPEN
 #define ENABLE_DLOPEN
 #endif
-#include "squashfuse_dlopen.h"
 
 /* Exit status to use when launching an AppImage fails.
  * For applications that assign meanings to exit status codes (e.g. rsync),
