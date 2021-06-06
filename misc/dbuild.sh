@@ -49,12 +49,12 @@ PROJECT_VOLUME="--user $TUID:$TGID -v `pwd`:/$PROJECT/"
 
 # == Initialize Build Environment ==
 $INITIALIZE && {
-  mkdir -p misc/.cicache/
-  : # cp build files to misc/.cicache/...
+  mkdir -p misc/.dbuild/.cache/
+  : # cp build files to misc/.dbuild/...
   ( set -x
     docker build -f "$DOCKERFILE" --build-arg DIST="$DIST" --build-arg USERGROUP="$TUID:$TGID" -t $IMGTAG misc/
   )
-  rm -f -r misc/.cicache/
+  rm -f -r misc/.dbuild/
 }
 
 # == Keep interactive tty ==
