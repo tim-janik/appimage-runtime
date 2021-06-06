@@ -220,6 +220,8 @@ print_help(const char *appimage_path)
         "AppImage options:\n\n"
         "  --appimage-extract [<pattern>]  Extract content from embedded filesystem image\n"
         "                                  If pattern is passed, only extract matching files\n"
+        "  --appimage-extract-and-run      Run the AppImage afer extraction without\n"
+        "                                  using FUSE\n"
         "  --appimage-help                 Print this help\n"
         "  --appimage-mount                Mount embedded filesystem image and print\n"
         "                                  mount point and wait for kill with Ctrl-C\n"
