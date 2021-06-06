@@ -48,13 +48,13 @@
 #include <wait.h>
 #include <fnmatch.h>
 
-#include <appimage/appimage_shared.h>
-#include <hashlib.h>
+#include "hexlify.c"
+#include "elf.c"
+#include "picohash.h"
 
 #ifndef ENABLE_DLOPEN
 #define ENABLE_DLOPEN
 #endif
-#include "squashfuse_dlopen.h"
 
 /* Exit status to use when launching an AppImage fails.
  * For applications that assign meanings to exit status codes (e.g. rsync),
@@ -676,18 +676,14 @@ int main(int argc, char *argv[]) {
                 exit(EXIT_EXECERROR);
             }
 
-            Md5Context ctx;
-            Md5Initialise(&ctx);
-
+            picohash_ctx_t ctx;
+            char digest[PICOHASH_MD5_DIGEST_LENGTH];
+            picohash_init_md5(&ctx);
             char buf[4096];
-            for (size_t bytes_read; (bytes_read = fread(buf, sizeof(char), sizeof(buf), f)); bytes_read > 0) {
-                Md5Update(&ctx, buf, (uint32_t) bytes_read);
-            }
-
-            MD5_HASH digest;
-            Md5Finalise(&ctx, &digest);
-
-            hexlified_digest = appimage_hexlify(digest.bytes, sizeof(digest.bytes));
+            for (size_t bytes_read; (bytes_read = fread(buf, sizeof(char), sizeof(buf), f)) && bytes_read > 0; )
+              picohash_update(&ctx, buf, bytes_read);
+            picohash_final(&ctx, digest);
+            hexlified_digest = appimage_hexlify(digest, sizeof(digest));
         }
 
         char* prefix = malloc(strlen(temp_base) + 20 + strlen(hexlified_digest) + 2);
