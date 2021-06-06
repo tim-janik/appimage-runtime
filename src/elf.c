@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <memory.h>
 #include <sys/mman.h>
+#include <assert.h>
 
 #include "light_elf.h"
 #include "light_byteswap.h"
@@ -213,7 +214,8 @@ char* read_file_offset_length(const char* fname, unsigned long offset, unsigned 
 	fseek(f, offset, SEEK_SET);
 
 	char* buffer = calloc(length + 1, sizeof(char));
-	fread(buffer, length, sizeof(char), f);
+	size_t n = fread(buffer, length, sizeof(char), f);
+        assert (n > 0);
 
 	fclose(f);
 
