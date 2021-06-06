@@ -644,7 +644,6 @@ int main(int argc, char *argv[]) {
     }
 
     // calculate full path of AppImage
-    int length;
     char fullpath[PATH_MAX];
 
     if(getenv("TARGET_APPIMAGE") == NULL) {
