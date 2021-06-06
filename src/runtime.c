@@ -48,7 +48,7 @@
 #include <wait.h>
 #include <fnmatch.h>
 
-#include <appimage/appimage_shared.h>
+#include "elf.c"
 #include "picohash.h"
 
 #ifndef ENABLE_DLOPEN
