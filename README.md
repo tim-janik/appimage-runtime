@@ -34,8 +34,17 @@ with a few extensions:
 
 Clone this project on Linux and run `make`.
 
-Append a SquashFs image with a `/AppRun` executable to the resulting `runtime` or `runtime-zstd` to form a packed
-[AppImage executable](https://discourse.appimage.org/t/how-to-run-an-appimage/80).
+As described in the original
+[AppImageKit README](https://github.com/AppImage/AppImageKit/blob/master/README.md#user-content-appimagetool-usage),
+to build an AppImage, append a SquashFs image with an `/AppRun` executable to the runtime executable `appimage-runtime` or
+`appimage-runtime-zstd` to form a packed [AppImage executable](https://discourse.appimage.org/t/how-to-run-an-appimage/80).
+
+```sh
+mksquashfs Package.appdir/ appdir.sqfs -root-owned -noappend -no-exports \
+		-noI -b 1048576 -comp zstd -Xcompression-level 22
+cat appimage-runtime-zstd appdir.sqfs > Package.AppImage
+chmod +x Package.AppImage
+```
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [contributors-badge]: https://img.shields.io/github/contributors/tim-janik/appimage-runtime.svg?style=for-the-badge
