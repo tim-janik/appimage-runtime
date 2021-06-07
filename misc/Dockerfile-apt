@@ -11,11 +11,12 @@ RUN ln -sf bash /bin/sh && ls -al /bin/sh
 # Provide /bin/retry to overcome short network outages
 RUN echo -e '#!/bin/bash\n"$@" || { sleep 5 ; "$@" ; } || { sleep 15 ; "$@" ; }' > /bin/retry && chmod +x /bin/retry
 
-# make sure getpwuid() works, and ~/ is writable, otherwise many tools break
+# make sure getpwuid() works, prepare writable ~/
 ARG USERGROUP
-RUN mkdir -m 0755 -p /cbuild/ && cp /root/.bashrc /cbuild/ && \
-  groupadd --gid ${USERGROUP#*:} cbuild && useradd --uid ${USERGROUP%:*} --gid ${USERGROUP#*:} --home-dir /cbuild cbuild && \
-  chown -R ${USERGROUP} /cbuild
+RUN mkdir -m 0755 -p /dbuild/ && cp /root/.bashrc /dbuild/ && \
+  groupadd --gid ${USERGROUP#*:} dbuild && useradd --uid ${USERGROUP%:*} --gid ${USERGROUP#*:} --home-dir /dbuild dbuild
+COPY .dbuild/ /dbuild/
+RUN chown -R ${USERGROUP} /dbuild
 
 # Upgrade packages
 RUN retry apt-get update && retry apt-get -y upgrade
